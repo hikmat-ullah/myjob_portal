@@ -1,0 +1,48 @@
+services:
+  app:
+    image: hikmatmarwat/job_portal:1.3
+    container_name: job_portal
+    ports:
+      - "80:80"
+    environment:
+      DB_CONNECTION: ${DB_CONNECTION}
+      DB_HOST: ${DB_HOST}
+      DB_PORT: ${DB_PORT}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - web_app
+  db:
+    image: mysql:5.7
+    container_name: db_container
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD} 
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./db_data:/docker-entrypoint-initdb.d
+    networks:
+      - web_app
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    environment:
+      PMA_HOST: ${DB_HOST}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD} 
+    networks:
+      - web_app 
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  web_app:
+    driver: bridge
