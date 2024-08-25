@@ -1,0 +1,15 @@
+#!/bin/bash
+
+export IMAGE=$(sed -n '1p' /tmp/.creds)
+export TAG=$(sed -n '2p' /tmp/.creds)
+export PASS=$(sed -n '3p' /tmp/.creds)
+
+docker login -u hikmatmarwat -p $PASS
+
+date > /home/admin/maven/portal.txt
+
+cd /home/admin/maven
+
+docker compose up -d
+
+
